@@ -452,3 +452,74 @@ void least_square_data(eVector *ans,eVector x,eVector y){
 void gaussian_dist(double *ans,double avg,double std_dev,double x){
   *ans = (1/(sqrt(2*PI)*std_dev)) * exp(-(x-avg)*(x-avg)/(2*std_dev*std_dev));
 }
+
+void print_complex(eComplex c1){
+  if(c1.im < 0){
+    printf("%lf - %lf i\n",c1.re,fabs(c1.im));
+  }
+  else{
+    printf("%lf + %lf i\n",c1.re,c1.im);
+  }
+}
+
+void sum_complex(eComplex *ans,eComplex c1,eComplex c2){
+  ans->re = c1.re + c2.re;
+  ans->im = c1.im + c2.im;
+}
+
+void dif_complex(eComplex *ans,eComplex c1,eComplex c2){
+  ans->re = c1.re - c2.re;
+  ans->im = c1.im - c2.im;
+}
+
+void prod_complex(eComplex *ans,eComplex c1,eComplex c2){
+  ans->re = c1.re*c2.re - c1.im*c2.im;
+  ans->im = c1.re*c2.im + c1.im*c2.re;
+}
+
+void conjugate_complex(eComplex *ans,eComplex c1){
+  ans->re = c1.re;
+  ans->im = -c1.im;
+}
+
+void norm_complex(double *ans,eComplex c1){
+  *ans = sqrt(c1.re*c1.re + c1.im*c1.im);
+}
+
+void exp_complex(eComplex *ans, eComplex c1){
+  ans->re = exp(c1.re)*cos(c1.im);
+  ans->im = exp(c1.re)*sin(c1.im);
+}
+
+void fft(eComplex **ans,eComplex *data,int N){
+  eComplex *data_e,*data_o,temp;
+  eComplex *fft_e,*fft_o;
+  int i;
+  *ans = (eComplex *) malloc(sizeof(eComplex)*N);
+  data_e  = (eComplex *) malloc(sizeof(eComplex)*(N/2));
+  data_o = (eComplex *) malloc(sizeof(eComplex)*(N/2));
+  if(N==1){
+    (*ans)[0].re = data[0].re;
+    (*ans)[0].im = data[0].im;
+    return;
+  }
+  else{
+    for(i=0;i<N;i++){
+      if(i%2)
+        data_o[i/2] = data[i];
+      else
+        data_e[i/2] = data[i];
+    }
+    fft(&fft_e,data_e,N/2);
+    fft(&fft_o,data_o,N/2);
+    for(i=0;i<N;i++){
+      temp.re = 0;
+      temp.im = 2*PI*i/N;
+      exp_complex(&temp,temp);
+      prod_complex(&temp,fft_o[i%(N/2)],temp);
+      sum_complex(&temp,temp,fft_e[i%(N/2)]);
+      (*ans)[i] = temp;
+    }
+    return;
+  }
+}

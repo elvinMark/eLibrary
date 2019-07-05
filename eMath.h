@@ -4,6 +4,7 @@
 #include<time.h>
 #include<string.h>
 
+
 /*********************************************/
 //This library was created for personal usage//
 //            by 31v1nm4rk                   //
@@ -21,6 +22,11 @@ typedef struct eMatrix{
   int rows;
   int cols;
 }eMatrix;
+
+typedef struct eComplex{
+	double re;
+	double im;
+}eComplex;
 
 /*************************************/
 //Basic operations matrix and vectors//
@@ -80,3 +86,16 @@ void integrate_function(double *ans,void fun_f(double*,double),double x_0,double
 /********************************/
 
 void ode_solver(eVector *data,void fun_ode(double *,double*,int),double* init_cond,int n_var,int N);
+
+/*********/
+//Complex//
+/********/ 
+
+void print_complex(eComplex c1);
+void sum_complex(eComplex *ans,eComplex c1,eComplex c2);
+void dif_complex(eComplex *ans,eComplex c1,eComplex c2);
+void prod_complex(eComplex *ans,eComplex c1,eComplex c2);
+void conjugate_complex(eComplex *ans,eComplex c1);
+void norm_complex(double *ans,eComplex c1);
+void exp_complex(eComplex *ans, eComplex c1);
+void fft(eComplex **ans,eComplex *data,int N);
